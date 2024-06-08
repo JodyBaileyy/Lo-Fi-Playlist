@@ -1,0 +1,22 @@
+<section
+  class="lofi-section-container container-fluid d-flex justify-content-around align-items-center {{ flex_direction | default('flex-row') }}"
+>
+  <div
+    class="container-fluid position-relative lofi-picture-card justify-content-around border border-black border-5 rounded"
+  >
+    <div class="horizontal-block"></div>
+    <div class="vertical-block"></div>
+    <div
+      class="position-absolute lofi-info-thumbnail d-flex justify-contenr-center align-items-center"
+    >
+      <img
+        class="lofi-content-image img-fluid img-thumbnail rounded"
+        src="{{ image_url }}"
+        alt="{{ image_alt }}"
+      />
+    </div>
+  </div>
+  <div class="container-fluid lofi-info-content">
+    {{ card_content | safe }}
+  </div>
+</section>

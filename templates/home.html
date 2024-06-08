@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block header %}
+    <div class="header-container container-fluid position-relative p-0">
+      <img src="{{ url_for('static', filename='images/cozy-modified.gif') }}" alt="Animals sitting at a campfire" class="w-100 header-image">
+      <div class="header-text">
+        <p class="header-text-start text-center">Music for</p>
+        <div class="header-text-qualities-container underline">
+          <p class="header-text-quality">Any Mood</p>
+          <p class="header-text-quality">Anywhere</p>
+          <p class="header-text-quality">Any Time</p>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+{% block main %}
+    {% with
+       image_url=url_for("static", filename="images/office.gif"),
+       image_alt='Gif of an office on a rainy day',
+       card_content='
+         <h1 class="underline underline-green content-heading">What is Lo-Fi?</h1>
+         <p>Lo-Fi (or lofi) is a style of music which usually consists of relaxing and calming instrumental beats. Most lofi songs consist of grainy or textural sounds, giving it a natural and tranquil quality, which contributes to the songs calming vibe</p>
+         <p>The beauty of lofi is that it is a universal style of music. The lack of vocals in lofi songs and it being purely instrumental beats, with occasional vocal samples, means that it can appeal to any demographic. The low bpm (beats per minute) mixed with the tranquil vibe that lofi provides makes it a perfect medium to listen to when working, studying, relaxing, or any scenario really!</p>
+        '
+    %}
+      {% include 'lofi_info_card.html' %}
+    {% endwith %}
+
+    {% with
+      image_url=url_for("static", filename="images/calm_room.gif"),
+      image_alt='Gif of a cozy room at night',
+      flex_direction='flex-row-reverse',
+      card_content='
+        <h2 class="underline underline-green content-heading">
+          Discover Lo-Fi
+        </h2>
+        <p>Want to discover lofi songs for yourself and see what this style of music has to offer? Visit <a href="/playlist">here</a> to discover lofi songs and create your own lofi playlists! Every song you discover will be unique to you so you do not have any repeat songs playing</p>
+      '
+    %}
+      {% include 'lofi_info_card.html' %}
+    {% endwith %}    
+{% endblock %}
+

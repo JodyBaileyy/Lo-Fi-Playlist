@@ -1,0 +1,212 @@
+:root {
+  --primary-clr-green: #2a9d8f;
+  --primary-clr-violet: #432575;
+  --primary-clr-brown: #dfb371;
+  --primary-clr-blue: #719dde;
+  --primary-clr-black: #1c1c1c;
+}
+
+main, footer{
+    font-family: 'Comfortaa', Helvetica;
+}
+
+main {
+    margin: 3% 10%;
+}
+
+header {
+    font-family: 'Italianno', cursive;
+}
+
+.navbar-brand {
+  font-family: 'Italianno', cursive;
+  color: white;
+}
+
+.nav-link {
+  font-family: 'Comfortaa', Helvetica;
+  color: white;
+}
+
+.nav-link:hover {
+  color: var(--primary-clr-green);
+}
+
+.navbar {
+  background-color: var(--primary-clr-black) !important;
+}
+
+.navbar-toggler {
+    background-color: var(--primary-clr-green);
+}
+
+.header-image {
+  filter: brightness(40%);
+}
+
+.header-text {
+  font-size: 3rem;
+  color: white;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+}
+
+.header-text-start {
+    font-size: 8rem;
+    font-weight: 900;
+}
+
+.header-text-qualities-container {
+  margin-top: 10%;
+  display: flex;
+  width: 90vw;
+  justify-content: space-around;
+
+}
+
+.content-heading {
+    margin-bottom: 2rem;
+}
+
+.header-text-quality {
+    text-wrap: nowrap;
+    text-align: center;
+}
+
+.underline {
+    text-decoration: underline;
+    text-decoration-skip-ink: none;
+    text-decoration-color: var(--primary-clr-blue);
+    text-decoration-thickness: 8%;
+}
+
+.underline-green {
+    text-decoration-color: var(--primary-clr-green);
+    text-decoration-thickness: 20%;
+    text-decoration-style: dotted;
+}
+
+.lofi-info-thumbnail {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    aspect-ratio: 1 / 1;
+    height: auto;
+}
+
+.lofi-info-content {
+    max-width: 35rem;
+    padding: 3%;
+    line-height: 200%;
+}
+
+.lofi-picture-card {
+    background-color: var(--primary-clr-violet);
+    padding: 0;
+    aspect-ratio: 1 / 1;
+    height: max-content;
+    max-width: 35rem;
+    max-height: 35rem;
+}
+
+.horizontal-block {
+    background-color: var(--primary-clr-green);
+    height: 20%;
+    width: 100%;
+}
+
+.vertical-block {
+    background-color: var(--primary-clr-blue);
+    width: 20%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+}
+
+.footer-text {
+    height: 10rem;
+    background-image: linear-gradient(
+        to bottom right,
+        var(--primary-clr-violet),
+        var(--primary-clr-blue),
+        var(--primary-clr-green)
+    );
+    color: white;
+}
+
+@media (max-width: 1310px) {
+    .lofi-info-content {
+        font-size: 80%;
+        line-height: 170%;
+    }
+
+    .content-heading {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 1050px) {
+    main {
+        margin: 3% 0;
+    }
+}
+
+@media (max-width: 845px) {
+    .header-text-start {
+        font-size: 5rem;
+    }
+
+    .header-text-qualities-container {
+        font-size: 2rem;
+        margin-top: 2rem;
+    }
+
+    .lofi-picture-card {
+        display: none;
+    }
+}
+
+@media (max-width: 580px) {
+    .header-text-start {
+        margin: 5rem 0 0 0;
+    }
+
+    .header-text-qualities-container {
+        font-size: 1.5rem;
+        margin-top: 1.5rem;
+    }
+}
+
+@media (max-width: 450px) {
+    .header-image {
+        display: none;
+    }
+
+    .header-text {
+        position: static;
+        transform: none;
+        background-image: linear-gradient(rgba(0, 0, 0, 55%), rgba(0, 0, 0, 55%)), url('./images/cyberpunk.jpg');
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+    .header-text-start {
+        margin: 0;
+    }
+
+    .header-text-qualities-container {
+        margin: auto;
+        flex-direction: column;
+        font-size: 2.5rem;
+        font-weight: bolder;
+    }
+
+    .footer-text {
+        height: 5rem;
+        background-color: var(--primary-clr-blue);
+    }
+}
