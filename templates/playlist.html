@@ -1,0 +1,103 @@
+{% extends 'layout.html' %}
+
+{% block header %}
+  <div class="playlist-heading", style="background-image: var(--background-filter), url('{{ image }}'); background-position: {{ position }}">
+    <h2 class="playlist-heading-text">Good {{ time_period }}, {{ name }}</h2>
+  </div>
+{% endblock %}
+
+{% block main %}
+  <div class="greyed-out-background d-none"></div>
+  <div class="playlist-container container-fluid">
+    <h3>Playlists</h3>
+    <div class="playlist-items-container">
+      {% for playlist in playlists %}
+      <div class="playlist-item" data-playlist-id="{{ playlist.id }}" data-playlist-name="{{ playlist.name }}">
+        <div class="playlist-name">{{ playlist.name }}</div>
+        <div class="playlist-songs-num">{{ playlist.songs | length }} songs</div>
+      </div>
+      {% endfor %}
+    </div>
+    <button class="btn new-playlist" type="button">
+      <i class="bi bi-plus-circle"></i>
+      New Playlist
+    </button>
+    <button class="discover-lofi-songs-btn btn" type="button">Discover new Lofi Songs</button>
+    <form class="new-playlist-modal d-none position-fixed">
+      <h4 class="text-center p-2">Create Playlist</h4>
+      <input type="text" placeholder="Playlist Name" class="name-input form-control mb-3" required>
+      <div class="create-playlist-btns-container d-flex justify-content-between">
+        <button type="button" class="cancel-create btn btn-danger">Cancel</button>
+        <button type="submit" class="create-playlist btn btn-success">Create</button>
+      </div>
+    </form>
+    <form class="rename-playlist-modal d-none position-fixed">
+      <h4 class="text-center p-2">Rename Playlist</h4>
+      <input class="new-name-input form-control mb-3" type="text" placeholder="New Name" required>
+      <div class="rename-btns-container d-flex justify-content-between">
+        <button type="button" class="cancel-rename btn btn-danger">Cancel</button>
+        <button type="submit" class="confirm-rename btn btn-success">Rename</button>
+      </div>
+    </form>
+  </div>
+ 
+
+  <div class="playlist-songs-container d-none">
+    <button class="btn d-flex align-items-center" id="back-to-playlists-btn">
+      <i class="bi bi-arrow-left fs-3"></i>
+      <p class="back-to-playlist-txt m-0 fs-4 px-2">Back to Playlists</p>
+    </button>
+    <div class="playlist-header d-flex align-items-center">
+      <button class="play-playlist-btn btn">
+        <i class="bi bi-play-circle-fill fs-1"></i>
+      </button>
+      <div class="playlist-header-title fs-1 px-3"></div>
+    </div>
+    {% for song in playlist_items %}
+      <div class="playlist-song" data-video-id="{{ song['id'] }}">
+        <button class="play-playlist-song-btn btn">Play/Pause</button>
+        title: {{ song['snippet']['title'] }}   duration: {{ song['contentDetails']['duration'][2:] }}
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="player-widget position-fixed d-flex flex-column border border-dark rounded">
+    <div class="player-info-container d-flex">
+      <img class="player-song-thumbnail rounded">
+      <div class="current-song-details-container">
+        <div class="player-song-title"></div>
+        <div class="player-song-time"></div>
+      </div>
+    </div>
+    <div class="player-interface-container d-flex">
+      <button class="btn" id="previous">
+        <i class="bi bi-caret-left-fill fs-2"></i>
+      </button>
+      <button class="btn" id="play-pause">
+        <i class="bi bi-play-circle-fill fs-2"></i>
+      </button>
+      <button class="btn" id="next">
+        <i class="bi bi-caret-right-fill fs-2"></i>
+      </button>
+      <button class="btn" id="favorite">
+        <i class="bi bi-heart fs-2"></i>
+      </button>
+      <div class="add-to-playlist-container position-relative">
+        <button class="btn" id="add-to-playlist-btn">
+          <i class="bi bi-folder-plus fs-2"></i>
+        </button>
+        <select class="add-to-playlist position-absolute">
+          <option selected disabled>--</option>
+          {% for playlist in playlists %}
+            <option value="{{ playlist.id }}">{{ playlist.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- The YouTube <iframe> (and video player) will replace this <div> tag. -->
+  <div id="player"></div>
+
+  <script src="{{ url_for('static', filename='index.js') }}" defer></script>
+{% endblock %}

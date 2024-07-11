@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+{% block header %}
+    <h2 class="text-center my-4 fw-bold form-heading">Register</h2>
+{% endblock %}
+
+{% block main %}
+<form action="/register" method="post" class="d-flex flex-column justify-content-center align-items-center px-4">
+    {% include 'alert.html' %}
+    <input type="text" class="form-control form-input my-3" placeholder="Username" name="username" autofocus required minlength="5">
+    <input type="password" class="form-control form-input my-3" placeholder="Password" name="password" required minlength="8"/>
+    <input type="password" class="form-control form-input my-3" placeholder="Confirm Password" name="confirmed_password" required minlength="8"/>
+    <button class="btn btn-primary mt-3" type="submit">Register</button>
+</form>
+{% endblock %}

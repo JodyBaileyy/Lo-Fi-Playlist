@@ -4,23 +4,34 @@
   --primary-clr-brown: #dfb371;
   --primary-clr-blue: #719dde;
   --primary-clr-black: #1c1c1c;
+  --background-clr-white: #f1f0f0f0;
+  --background-filter: linear-gradient(rgba(0, 0, 0, 55%), rgba(0, 0, 0, 55%));
 }
 
-main, footer{
-    font-family: 'Comfortaa', Helvetica;
+main,
+footer {
+  font-family: 'Comfortaa', Helvetica;
+}
+
+body {
+  background-color: var(--background-clr-white);
 }
 
 main {
-    margin: 3% 10%;
+  margin: 3% 10%;
 }
 
 header {
-    font-family: 'Italianno', cursive;
+  font-family: 'Italianno', cursive;
 }
 
 .navbar-brand {
   font-family: 'Italianno', cursive;
   color: white;
+}
+
+.navbar-brand:hover {
+  color: var(--primary-clr-green) !important;
 }
 
 .nav-link {
@@ -37,14 +48,28 @@ header {
 }
 
 .navbar-toggler {
-    background-color: var(--primary-clr-green);
+  background-color: var(--primary-clr-green);
 }
 
-.header-image {
+.form-input {
+  max-width: 25rem;
+}
+
+.form-heading {
+  font-size: 3rem;
+}
+
+.alert-container {
+  font-family: 'Comfortaa', Helvetica;
+  width: 100%;
+  font-size: 0.8rem;
+}
+
+.home-header-image {
   filter: brightness(40%);
 }
 
-.header-text {
+.home-header-text {
   font-size: 3rem;
   color: white;
   top: 35%;
@@ -53,160 +78,278 @@ header {
   position: absolute;
 }
 
-.header-text-start {
-    font-size: 8rem;
-    font-weight: 900;
+.home-header-text-start {
+  font-size: 8rem;
+  font-weight: 900;
 }
 
-.header-text-qualities-container {
+.home-header-text-qualities-container {
   margin-top: 10%;
   display: flex;
   width: 90vw;
   justify-content: space-around;
-
 }
 
 .content-heading {
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
-.header-text-quality {
-    text-wrap: nowrap;
-    text-align: center;
+.home-header-text-quality {
+  text-wrap: nowrap;
+  text-align: center;
 }
 
 .underline {
-    text-decoration: underline;
-    text-decoration-skip-ink: none;
-    text-decoration-color: var(--primary-clr-blue);
-    text-decoration-thickness: 8%;
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
+  text-decoration-color: var(--primary-clr-blue);
+  text-decoration-thickness: 8%;
 }
 
 .underline-green {
-    text-decoration-color: var(--primary-clr-green);
-    text-decoration-thickness: 20%;
-    text-decoration-style: dotted;
+  text-decoration-color: var(--primary-clr-green);
+  text-decoration-thickness: 20%;
+  text-decoration-style: dotted;
 }
 
 .lofi-info-thumbnail {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    aspect-ratio: 1 / 1;
-    height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  aspect-ratio: 1 / 1;
+  height: auto;
 }
 
 .lofi-info-content {
-    max-width: 35rem;
-    padding: 3%;
-    line-height: 200%;
+  max-width: 35rem;
+  padding: 3%;
+  line-height: 200%;
 }
 
 .lofi-picture-card {
-    background-color: var(--primary-clr-violet);
-    padding: 0;
-    aspect-ratio: 1 / 1;
-    height: max-content;
-    max-width: 35rem;
-    max-height: 35rem;
+  background-color: var(--primary-clr-violet);
+  padding: 0;
+  aspect-ratio: 1 / 1;
+  height: max-content;
+  max-width: 35rem;
+  max-height: 35rem;
 }
 
 .horizontal-block {
-    background-color: var(--primary-clr-green);
-    height: 20%;
-    width: 100%;
+  background-color: var(--primary-clr-green);
+  height: 20%;
+  width: 100%;
 }
 
 .vertical-block {
-    background-color: var(--primary-clr-blue);
-    width: 20%;
-    height: 100%;
-    position: absolute;
-    top: 0;
+  background-color: var(--primary-clr-blue);
+  width: 20%;
+  height: 100%;
+  position: absolute;
+  top: 0;
 }
 
 .footer-text {
-    height: 10rem;
-    background-image: linear-gradient(
-        to bottom right,
-        var(--primary-clr-violet),
-        var(--primary-clr-blue),
-        var(--primary-clr-green)
-    );
-    color: white;
+  height: 10rem;
+  background-image: linear-gradient(
+    to bottom right,
+    var(--primary-clr-violet),
+    var(--primary-clr-blue),
+    var(--primary-clr-green)
+  );
+  color: white;
+}
+
+/* Playlist Elements */
+.playlist-alert {
+  top: 13%;
+  z-index: 3;
+}
+
+.playlist-heading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 50vh;
+}
+
+.playlist-heading-text {
+  font-family: 'Amatic SC', sans-serif;
+  font-size: 5rem;
+  color: white;
+  text-align: center;
+}
+
+.playlist-song-thumbnail {
+  aspect-ratio: 1.6 / 1;
+  max-width: 7rem;
+}
+
+.player-widget {
+  bottom: 2rem;
+  right: 8rem;
+  background-color: var(--primary-clr-blue);
+}
+.player-song-thumbnail {
+  aspect-ratio: 1.6 / 1;
+  max-width: 7rem;
+}
+
+.back-to-playlist-txt {
+  color: var(--primary-clr-violet);
+}
+
+.playlist-song:hover {
+  background-color: #719dde8a;
+  border-radius: 30px;
+}
+
+.playlist-song-duration {
+  font-size: 0.8rem;
+  color: var(--primary-clr-violet);
+}
+
+.playing-song-border {
+  border: 2px solid var(--primary-clr-blue);
+  border-radius: 30px;
+}
+
+.playlist-info-container {
+  max-width: 60rem;
+}
+
+.add-to-playlist {
+  width: 100%;
+  height: 100%;
+  left: 0;
+  opacity: 0.0001;
+  cursor: pointer;
+}
+
+.song-add-to-playlist-select {
+  width: 100%;
+  height: 100%;
+  left: 0;
+  opacity: 0.0001;
+  cursor: pointer;
+}
+
+.new-playlist-modal {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28%;
+  z-index: 2;
+}
+
+.rename-playlist-modal {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28%;
+  z-index: 2;
+}
+
+.cancel-rename {
+  width: 49%;
+}
+
+.cancel-create {
+  width: 49%;
+}
+
+.confirm-rename {
+  width: 49%;
+}
+
+.create-playlist {
+  width: 49%;
+}
+
+.greyed-out-background {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  background-color: #80808066;
+  z-index: 2;
+  bottom: 0;
+  right: 0;
 }
 
 @media (max-width: 1310px) {
-    .lofi-info-content {
-        font-size: 80%;
-        line-height: 170%;
-    }
+  .lofi-info-content {
+    font-size: 80%;
+    line-height: 170%;
+  }
 
-    .content-heading {
-        font-size: 2rem;
-    }
+  .content-heading {
+    font-size: 2rem;
+  }
 }
 
 @media (max-width: 1050px) {
-    main {
-        margin: 3% 0;
-    }
+  main {
+    margin: 3% 0;
+  }
 }
 
 @media (max-width: 845px) {
-    .header-text-start {
-        font-size: 5rem;
-    }
+  .home-header-text-start {
+    font-size: 5rem;
+  }
 
-    .header-text-qualities-container {
-        font-size: 2rem;
-        margin-top: 2rem;
-    }
+  .home-header-text-qualities-container {
+    font-size: 2rem;
+    margin-top: 2rem;
+  }
 
-    .lofi-picture-card {
-        display: none;
-    }
+  .lofi-picture-card {
+    display: none;
+  }
 }
 
 @media (max-width: 580px) {
-    .header-text-start {
-        margin: 5rem 0 0 0;
-    }
+  .home-header-text-start {
+    margin: 5rem 0 0 0;
+  }
 
-    .header-text-qualities-container {
-        font-size: 1.5rem;
-        margin-top: 1.5rem;
-    }
+  .home-header-text-qualities-container {
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+  }
 }
 
 @media (max-width: 450px) {
-    .header-image {
-        display: none;
-    }
+  .home-header-image {
+    display: none;
+  }
 
-    .header-text {
-        position: static;
-        transform: none;
-        background-image: linear-gradient(rgba(0, 0, 0, 55%), rgba(0, 0, 0, 55%)), url('./images/cyberpunk.jpg');
-        background-position: center;
-        background-size: cover;
-        background-repeat: no-repeat;
-    }
+  .home-header-text {
+    position: static;
+    transform: none;
+    background-image: var(--background-filter), url('./images/cyberpunk.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
 
-    .header-text-start {
-        margin: 0;
-    }
+  .home-header-text-start {
+    margin: 0;
+  }
 
-    .header-text-qualities-container {
-        margin: auto;
-        flex-direction: column;
-        font-size: 2.5rem;
-        font-weight: bolder;
-    }
+  .home-header-text-qualities-container {
+    margin: auto;
+    flex-direction: column;
+    font-size: 2.5rem;
+    font-weight: bolder;
+  }
 
-    .footer-text {
-        height: 5rem;
-        background-color: var(--primary-clr-blue);
-    }
+  .footer-text {
+    height: 5rem;
+    background-color: var(--primary-clr-blue);
+  }
 }

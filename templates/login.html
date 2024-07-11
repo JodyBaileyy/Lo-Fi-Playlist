@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+{% block header %}
+    <h2 class="text-center my-4 fw-bold form-heading">Login</h2>
+{% endblock %}
+
+{% block main %}
+<form action="/login" method="post" class="d-flex flex-column justify-content-center align-items-center px-4">
+    {% include 'alert.html' %}
+    <input type="text" class="form-control form-input my-3 mx-4" placeholder="Username" name="username" autocomplete="false" autofocus required>
+    <input type="password" class="form-control form-input my-3 mx-4" placeholder="Password" name="password" required/>
+    <p class="text-center">Don't have an account? Register <a href="{{url_for('register')}}">here</a></p>
+    <button class="btn btn-primary mt-3" type="submit">Login</button>
+</form>
+{% endblock %}
