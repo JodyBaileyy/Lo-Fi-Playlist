@@ -61,30 +61,32 @@
     {% endfor %}
   </div>
 
-  <div class="player-widget position-fixed d-flex flex-column border border-dark rounded">
-    <div class="player-info-container d-flex">
-      <img class="player-song-thumbnail rounded">
-      <div class="current-song-details-container">
-        <div class="player-song-title"></div>
-        <div class="player-song-time"></div>
+  <div class="player-widget position-fixed d-flex flex-column border border-black rounded shadow-lg d-none">
+    <div class="player-info-container d-flex align-items-center">
+      <img class="player-song-thumbnail rounded m-3">
+      <div class="current-song-details-container me-3">
+        <div class="player-song-title text-truncate pt-3"></div>
+        <div class="player-song-time-container d-flex pb-3">
+          <div class="player-elapsed-time me-1"></div> / <div class="player-song-total-time ms-1"></div>
+        </div>
       </div>
     </div>
-    <div class="player-interface-container d-flex">
+    <div class="player-interface-container d-flex justify-content-around">
       <button class="btn" id="previous">
-        <i class="bi bi-caret-left-fill fs-2"></i>
+        <i class="bi bi-caret-left-fill fs-2 text-light"></i>
       </button>
       <button class="btn" id="play-pause">
-        <i class="bi bi-play-circle-fill fs-2"></i>
+        <i class="bi bi-play-circle-fill fs-2 text-light"></i>
       </button>
       <button class="btn" id="next">
-        <i class="bi bi-caret-right-fill fs-2"></i>
+        <i class="bi bi-caret-right-fill fs-2 text-light"></i>
       </button>
       <button class="btn" id="favorite">
-        <i class="bi bi-heart fs-2"></i>
+        <i class="bi bi-heart fs-2 text-light"></i>
       </button>
       <div class="add-to-playlist-container position-relative">
         <button class="btn" id="add-to-playlist-btn">
-          <i class="bi bi-folder-plus fs-2"></i>
+          <i class="bi bi-folder-plus fs-2 text-light"></i>
         </button>
         <select class="add-to-playlist position-absolute">
           <option selected disabled>--</option>
@@ -97,7 +99,7 @@
   </div>
 
   <!-- The YouTube <iframe> (and video player) will replace this <div> tag. -->
-  <div id="player"></div>
+  <div id="player" class="d-none"></div>
 
   <script src="{{ url_for('static', filename='index.js') }}" defer></script>
 {% endblock %}

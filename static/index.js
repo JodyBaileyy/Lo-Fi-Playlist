@@ -11,8 +11,63 @@ const PAUSED = 2;
 const BUFFERING = 3;
 const VIDEOCUED = 5;
 
-let listeningSongInterval;
-let playingSongId;
+class Playlist {
+  constructor() {
+    this.playingPlaylist = [];
+    this.quedPlaylist = [];
+    this.cuedPlaylistData = [];
+    this.playlingPlaylistData = [];
+    this.loadingNewPlaylistSong = false;
+    this.playingSongInterval = null;
+    this.playingSong = null;
+  }
+  
+  quedPlaylistIsPlaying() {
+    return this.playingPlaylist === this.quedPlaylist;
+  }
+
+  // For race conditions when the player needs to get up to date to play the video at the specified index
+  updatePlaylist(index, songId) {
+    this.loadingNewPlaylistSong = true;
+    this.playlingPlaylistData = this.cuedPlaylistData;
+    this.playingPlaylist = this.quedPlaylist;
+
+    player.cuePlaylist(lofiPlaylist.quedPlaylist);
+    
+    setTimeout(() => {
+      player.playVideoAt(index);
+      handleNewSongLoad(songId)
+      
+      this.loadingNewPlaylistSong = false;
+    }, 1000)
+  }
+
+  createPlayingSongInterval() {
+    this.playingSongInterval = setInterval(async () => {
+      // If songs has been played for 10 or more seconds
+      if (player.playerInfo.currentTime >= 10) {
+        try {
+          await addSongToListenedList(this.playingSong);
+        } catch (err) {
+          console.log(
+            'error occured adding song to listened list: ',
+            err.message
+          );
+        } finally {
+          clearInterval(this.playingSongInterval);
+        }
+      }
+    }, 1000)
+  }
+
+  getPlayingSongData() {
+    return this.playlingPlaylistData.find((song) => {
+      return song.id === this.playingSong;
+    })
+  }
+}
+
+const lofiPlaylist = new Playlist();
 
 tag.src = 'https://www.youtube.com/iframe_api';
 let firstScriptTag = document.getElementsByTagName('script')[0];
@@ -39,9 +94,10 @@ function onYouTubeIframeAPIReady() {
 
 // 4. The API will call this function when the video player is ready.
 function onPlayerReady(event) {
-  const nextButton = document.getElementById('next');
-  const previousButton = document.getElementById('previous');
-  const pausePlayButton = document.getElementById('play-pause');
+  const nextButton = document.querySelector('#next');
+  const previousButton = document.querySelector('#previous');
+  const pausePlayButton = document.querySelector('#play-pause');
+  const playerElapsedTime = document.querySelector('.player-elapsed-time')
 
   nextButton.addEventListener('click', () => {
     event.target.nextVideo();
@@ -59,6 +115,10 @@ function onPlayerReady(event) {
       event.target.pauseVideo();
     }
   });
+
+  setInterval(() => {
+    playerElapsedTime.textContent = convertToPlayerFormat(player.getCurrentTime());
+  }, 1000)
 }
 
 
@@ -68,13 +128,8 @@ function onPlayerStateChange(event) {
 
   if (!playerVidId) return;
 
-  const favoriteSongButton = document.querySelector('#favorite');
-  const addToPlaylistSelect = document.querySelector('.add-to-playlist');
   const pausePlayWidgetButton = document.querySelector('#play-pause');
-  const { playerSongThumbnail, playerSongTime, playerSongTitle } = getPlayerInfoElements()
-  let {  playlistSong, toggleSongButton } = getPlayingPlaylistSongElements(playingSongId);
-
-  console.log("playlistSongPausePlayButton: ", toggleSongButton);
+  let { toggleSongButton } = getPlayingPlaylistSongElements(lofiPlaylist.playingSong);
 
   // Change the play / pause button icon on the widget and playlist song if a song is loaded
   if (event.target.getPlayerState() === PLAYING) {
@@ -85,75 +140,54 @@ function onPlayerStateChange(event) {
     replaceClass(toggleSongButton?.firstElementChild, pauseIconClass, playIconClass);
   }
 
-  // If a new song is loaded
-  if (playingSongId !== playerVidId) {
-    clearInterval(listeningSongInterval);
+  // If a new song is loaded and isn't already being handled by the updatePlaylist class method
+  if (!lofiPlaylist.loadingNewPlaylistSong && lofiPlaylist.playingSong !== playerVidId) {
+    handleNewSongLoad(playerVidId);
+  }
+}
 
-    // Changes:
+const handleNewSongLoad = (newSongId) => {
+  // Changes:
     // - The previously playing songs icon to a play icon, and change the playing songs icon to a paused icon
     // - Removes the previously playing songs border class, and adds the border class to the new playing song
     // - Updated the widget with the new playing song's info
 
-    replaceClass(toggleSongButton?.firstElementChild, pauseIconClass, playIconClass);
-    removeClasses(playlistSong, playingSongBorderClass);
+  const isFirstLoad = !lofiPlaylist.playingSong;
+  const favoriteSongButton = document.querySelector('#favorite');
+  const addToPlaylistSelect = document.querySelector('.add-to-playlist');
+  const { playerSongThumbnail, playerSongTotalTime, playerSongTitle } = getPlayerInfoElements();
+  let { playlistSong, toggleSongButton } = getPlayingPlaylistSongElements(lofiPlaylist.playingSong);
 
-    ({ toggleSongButton, playlistSong, songDuration, songTitle, songThumbnail } = getPlayingPlaylistSongElements(playerVidId));
+  clearInterval(lofiPlaylist.playingSongInterval);
 
-    replaceClass(toggleSongButton?.firstElementChild, playIconClass, pauseIconClass);
-    addClasses(playlistSong, playingSongBorderClass);
+  replaceClass(toggleSongButton?.firstElementChild, pauseIconClass, playIconClass);
+  removeClasses(playlistSong, playingSongBorderClass);
 
-    // Update the playingSongID and elements that reference the playing song id
-    playingSongId = playerVidId;
-    favoriteSongButton.dataset.videoId = playingSongId;
-    addToPlaylistSelect.dataset.videoId = playingSongId;
-    addToPlaylistSelect.value = '--';
+  ({ toggleSongButton, playlistSong } = getPlayingPlaylistSongElements(newSongId));
 
-    playerSongThumbnail.src = songThumbnail.src;
-    playerSongThumbnail.alt = songThumbnail.alt;
+  replaceClass(toggleSongButton?.firstElementChild, playIconClass, pauseIconClass);
+  addClasses(playlistSong, playingSongBorderClass);
+  
+  lofiPlaylist.playingSong = newSongId;
+  favoriteSongButton.dataset.videoId = newSongId;
+  addToPlaylistSelect.dataset.videoId = newSongId;
+  addToPlaylistSelect.value = '--';
 
-    playerSongTime.textContent = songDuration.textContent;
-    playerSongTitle.textContent = songTitle.textContent;
+  const { title, thumbnail, duration } = lofiPlaylist.getPlayingSongData();
 
-    listeningSongInterval = setInterval(async () => {
-      console.log('Player duration', event.target.playerInfo.currentTime);
-      // If songs has been played for 10 or more seconds
-      if (event.target.playerInfo.currentTime >= 10) {
-        try {
-          await addSongToListenedList(playingSongId);
+  playerSongThumbnail.src = thumbnail;
+  playerSongThumbnail.alt = `${title} thumbnail`;
 
-          console.log('Song added to listened song list');
-        } catch (err) {
-          console.log(
-            'error occured adding song to listened list: ',
-            err.message
-          );
-        } finally {
-          clearInterval(listeningSongInterval);
-        }
-      }
-    }, 1000);
-  }
-}
+  playerSongTotalTime.textContent = duration;
+  playerSongTitle.textContent = title;
 
-class Playlist {
-  constructor() {
-    this.playingPlaylist = [];
-    this.quedPlaylist = [];
+  if (isFirstLoad) {
+    handleFirstLoad();
   }
   
-  quedPlaylistIsPlaying() {
-    return this.playingPlaylist === this.quedPlaylist;
-  }
-
-  // For race conditions when the player needs to get up to date to play the video at the specified index
-  updatePlayingSong(index) {
-    setTimeout(() => {
-      player.playVideoAt(index);
-    }, 1000)
-  }
+  lofiPlaylist.createPlayingSongInterval();
 }
 
-const lofiPlaylist = new Playlist();
 
 // Creating new playlists elements
 const newPlaylistButton = document.querySelector('.new-playlist');
@@ -350,8 +384,12 @@ const renamePlaylist = async (playlistId, name) => {
   }
 };
 
-const firstLoad = () => {
+const handleFirstLoad = () => {
+  const youtubePlayer = document.querySelector('#player');
+  const playerWidget = document.querySelector('.player-widget');
 
+  removeClasses(youtubePlayer, 'd-none');
+  removeClasses(playerWidget, 'd-none');
 }
 
 
@@ -420,6 +458,30 @@ const toggleClass = (element, className) => {
   }
 }
 
+const convertToPlayerFormat = (time) => {
+  if (!time) return '0:00';
+
+  let seconds, minutes, hours = 0;
+  
+  hours = Math.floor(time / 3600);
+  minutes = Math.floor(time / 60);
+  seconds = Math.floor(time - (hours * 3600) - (minutes * 60));
+
+  if (seconds < 10) {
+    seconds = `0${seconds}`;
+  }
+  
+  if (hours === 0) {
+    return `${minutes}:${seconds}`;
+  } 
+
+  if (minutes < 10) {
+    minutes = `0${minutes}`;
+  }
+
+  return `${hours}:${formattedMinutesSeconds}`;
+}
+
 const toggleGreyedOutBackground = () => {
   toggleClass(greyedOutBackground, 'd-none');
 }
@@ -431,16 +493,9 @@ const getPlayingPlaylistSongPausePlayButton = (songId) => {
 const getPlayingPlaylistSongElements = (songId) => {
   const playlistSong = document.querySelector(`.playlist-song[data-video-id='${songId}']`);
   const toggleSongButton = playlistSong?.querySelector('.play-playlist-song-btn');
-  const songThumbnail = playlistSong?.querySelector('.playlist-song-thumbnail');
-  const songTitle = playlistSong?.querySelector(".playlist-song-title");
-  const songDuration = playlistSong?.querySelector('.playlist-song-duration');
-
 
   return {
     playlistSong,
-    songTitle,
-    songThumbnail,
-    songDuration,
     toggleSongButton
   }
 }
@@ -448,12 +503,12 @@ const getPlayingPlaylistSongElements = (songId) => {
 const getPlayerInfoElements = () => {
   const playerSongThumbnail = document.querySelector('.player-song-thumbnail');
   const playerSongTitle = document.querySelector('.player-song-title');
-  const playerSongTime = document.querySelector('.player-song-time');
+  const playerSongTotalTime = document.querySelector('.player-song-total-time');
 
   return {
     playerSongThumbnail,
     playerSongTitle,
-    playerSongTime
+    playerSongTotalTime
   }
 }
 
@@ -551,7 +606,7 @@ const renderPlaylistSongs = async (name, songs, playlistId = null) => {
   playlistSongs.forEach(playlistSong => {
     playlistSongsContainer.removeChild(playlistSong);
   })
-  // playlistSongsContainer.innerHTML = '';
+
   playlistSongsContainer.append(backToPlaylists, playlistHeader);
 
   songs.forEach((song, index) => {
@@ -575,27 +630,10 @@ const renderPlaylistSongs = async (name, songs, playlistId = null) => {
     playSongButton.dataset.videoId = song.id;
     playSongButton.appendChild(playSongIcon);
     playSongButton.addEventListener('click', () => {
-      // // If player isn't already playing the song we're working with
-      // if (player.playerInfo.playlistIndex !== index) {
-      //   player.playVideoAt(index);
-      // } else {
-      //   // if already playing the song, pause or play the song
-      //   if (player.getPlayerState() === PLAYING) {
-      //     player.pauseVideo();
-      //   } else {
-      //     player.playVideo();
-      //   }
-      // }
-
-      // If the playlist isn't already loaded / playing
       if (!lofiPlaylist.quedPlaylistIsPlaying()) {
-        console.log('Qued playlist isnt playling')
-        player.cuePlaylist(lofiPlaylist.quedPlaylist);
-        lofiPlaylist.playingPlaylist = lofiPlaylist.quedPlaylist;
-        lofiPlaylist.updatePlayingSong(index);
+        lofiPlaylist.updatePlaylist(index, song.id);
       } else {
           // If player isn't already playing the song we're working with
-          console.log('Qued playlist IS playing');
         if (player.playerInfo.playlistIndex !== index) {
           player.playVideoAt(index);
         } else if (player.getPlayerState() === PLAYING) { // if already playing the song, pause or play the song
@@ -702,14 +740,9 @@ const addFunctionalityToPlaylists = (playlists) => {
   
 
           const songIds = response.data.songs.map((song) => song.id);
-  
-          // if (songIds.length === 0) {
-          //   player.stopVideo();
-          // } else {
-          //   player.cuePlaylist(songIds);
-          // }
 
           lofiPlaylist.quedPlaylist = songIds;
+          lofiPlaylist.cuedPlaylistData = response.data.songs;
         } else {
           displayAlert('warning', `Failed to load playlist: ${response.error}`);
         }
@@ -782,12 +815,8 @@ dicoverSongsButton.addEventListener('click', async (e) => {
 
     const songIds = response.data.songs.map((song) => song.id);
 
-    // if (songIds.length === 0) {
-    //   player.stopVideo();
-    // } else {
-    //   player.cuePlaylist(songIds);
-    // }
     lofiPlaylist.quedPlaylist = songIds;
+    lofiPlaylist.cuedPlaylistData = response.data.songs;
 
     e.target.disabled = false;
   } catch (err) {

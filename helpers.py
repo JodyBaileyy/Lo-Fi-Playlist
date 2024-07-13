@@ -61,8 +61,6 @@ def get_time_period():
     else:
         time_period = NIGHT
 
-    print("HOUR: ", hour)
-
     return time_period
 
 
