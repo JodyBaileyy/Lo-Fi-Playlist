@@ -17,6 +17,8 @@ class Playlist {
     this.quedPlaylist = [];
     this.cuedPlaylistData = [];
     this.playlingPlaylistData = [];
+    this.generatedPlaylist = [];
+    this.generatedPlaylistData = [];
     this.loadingNewPlaylistSong = false;
     this.playingSongInterval = null;
     this.playingSong = null;
@@ -27,7 +29,7 @@ class Playlist {
   }
 
   // For race conditions when the player needs to get up to date to play the video at the specified index
-  updatePlaylist(index, songId) {
+  updatePlaylist(index, songId = this.quedPlaylist[0]) {
     this.loadingNewPlaylistSong = true;
     this.playlingPlaylistData = this.cuedPlaylistData;
     this.playingPlaylist = this.quedPlaylist;
@@ -39,7 +41,7 @@ class Playlist {
       handleNewSongLoad(songId)
       
       this.loadingNewPlaylistSong = false;
-    }, 1000)
+    }, 1500)
   }
 
   createPlayingSongInterval() {
@@ -190,7 +192,7 @@ const handleNewSongLoad = (newSongId) => {
 
 
 // Creating new playlists elements
-const newPlaylistButton = document.querySelector('.new-playlist');
+const newPlaylistButton = document.querySelector('.new-playlist-btn');
 const newPlaylistModel = document.querySelector('.new-playlist-modal');
 const createPlaylistButton = document.querySelector('.create-playlist');
 const cancelCreateButton = document.querySelector('.cancel-create');
@@ -222,7 +224,9 @@ const playlistSongsContainer = document.querySelector('.playlist-songs-container
 const playlistHeader = document.querySelector('.playlist-header');
 
 // Discover songs
+const discoverSongsContainer = document.querySelector('.discover-lofi-songs-container');
 const dicoverSongsButton = document.querySelector('.discover-lofi-songs-btn');
+const loadingSongsImage = document.querySelector('.loading-songs-img');
 
 // Icon Classes
 const playIconClass = 'bi-play-circle-fill';
@@ -234,6 +238,7 @@ const filledHeartIconClass = 'bi-heart-fill';
 const deleteIconClass = 'bi-trash2-fill';
 const addToPlaylistIconClass = 'bi-folder-plus';
 const backIconClass = 'bi-arrow-left'; 
+const renameIconClass = 'bi-vector-pen';
 
 // Util classes
 const playingSongBorderClass = 'playing-song-border';
@@ -425,6 +430,9 @@ const getIcon = (name, size) => {
     case 'back':
       iconElement.className = `bi ${backIconClass} fs-${size}`;
       break;
+    case 'rename':
+      iconElement.className = `bi ${renameIconClass} fs-${size}`;
+      break;
   }
 
   return iconElement;
@@ -464,8 +472,8 @@ const convertToPlayerFormat = (time) => {
   let seconds, minutes, hours = 0;
   
   hours = Math.floor(time / 3600);
-  minutes = Math.floor(time / 60);
-  seconds = Math.floor(time - (hours * 3600) - (minutes * 60));
+  minutes = Math.floor((time - hours * 3600) / 60);
+  seconds = Math.floor(time - hours * 3600 - minutes * 60);
 
   if (seconds < 10) {
     seconds = `0${seconds}`;
@@ -479,7 +487,7 @@ const convertToPlayerFormat = (time) => {
     minutes = `0${minutes}`;
   }
 
-  return `${hours}:${formattedMinutesSeconds}`;
+  return `${hours}:${minutes}:${seconds}`;
 }
 
 const toggleGreyedOutBackground = () => {
@@ -517,12 +525,11 @@ const personalisePlaylistHeader = (playlistName) => {
   const playPlaylistButton = document.querySelector('.play-playlist-btn');
 
   playPlaylistButton.addEventListener('click', () => {
-    if (!lofiPlaylist.quedPlaylistIsPlaying()) {
-      player.cuePlaylist(lofiPlaylist.quedPlaylist);
-      lofiPlaylist.playingPlaylist = lofiPlaylist.quedPlaylist;
-    }
+    if (lofiPlaylist.quedPlaylist.length == 0) return;
 
-    player.playVideoAt(0);
+    if (!lofiPlaylist.quedPlaylistIsPlaying()) {
+      lofiPlaylist.updatePlaylist(0)
+    }
   })
 
   playlistTitle.textContent = playlistName;
@@ -564,10 +571,10 @@ const createPlaylistSelectContainer = (playlists, songId) => {
 }
 
 const displayAlert = (level, text) => {
+  const alertContainer = document.querySelector('.playlist-alert-container');
   const alert = document.createElement('div');
   const alertText = document.createElement('div');
   const clostAlertButton = document.createElement('button');
-  const mainElement = document.querySelector('main');
 
   clostAlertButton.type = 'button';
   clostAlertButton.className = 'btn-close';
@@ -580,8 +587,7 @@ const displayAlert = (level, text) => {
   alert.className = `playlist-alert alert alert-dismissible alert-${level} position-sticky fade show text-center`;
   alert.append(alertText, clostAlertButton);
 
-  mainElement.insertBefore(alert, mainElement.firstChild);
-
+  alertContainer.append(alert)
   // Close the alert after 8 seconds
   setTimeout(() => {
     clostAlertButton.click();
@@ -629,7 +635,17 @@ const renderPlaylistSongs = async (name, songs, playlistId = null) => {
     playSongButton.className = 'play-playlist-song-btn btn';
     playSongButton.dataset.videoId = song.id;
     playSongButton.appendChild(playSongIcon);
-    playSongButton.addEventListener('click', () => {
+
+    playlistThumbnail.src = song.thumbnail;
+    playlistThumbnail.className = 'playlist-song-thumbnail rounded';
+    playlistThumbnail.alt = `${song.title} thumbnail`;
+    
+    playlistInfoContainer.className = 'playlist-info-container d-flex flex-column px-3 justify-content-center me-auto';
+    playlistInfoContainer.append(playlistSongTitle, playlistDuration);
+    
+    playlistSongElement.dataset.videoId = song.id;
+    playlistSongElement.className = 'playlist-song d-flex py-4 my-1';
+    playlistSongElement.addEventListener('click', () => {
       if (!lofiPlaylist.quedPlaylistIsPlaying()) {
         lofiPlaylist.updatePlaylist(index, song.id);
       } else {
@@ -643,17 +659,7 @@ const renderPlaylistSongs = async (name, songs, playlistId = null) => {
         }
       }
     });
-
-    playlistThumbnail.src = song.thumbnail;
-    playlistThumbnail.className = 'playlist-song-thumbnail rounded';
-    playlistThumbnail.alt = `${song.title} thumbnail`;
-
-    playlistInfoContainer.className = 'playlist-info-container d-flex flex-column px-3 justify-content-center';
-    playlistInfoContainer.append(playlistSongTitle, playlistDuration);
-
-    playlistSongElement.dataset.videoId = song.id;
-    playlistSongElement.className = 'playlist-song d-flex py-4 my-1';
-
+    
     const playlistSongElementChildren = [
       playSongButton,
       playlistThumbnail,
@@ -666,7 +672,9 @@ const renderPlaylistSongs = async (name, songs, playlistId = null) => {
 
       deleteSongButton.className = 'delete-playlist-song-btn btn';
       deleteSongButton.append(getIcon('delete', 5));
-      deleteSongButton.addEventListener('click', async () => {
+      deleteSongButton.addEventListener('click', async (e) => {
+        e.stopPropagation()
+
         try {
           const response = await deletePlaylistSong(song.id, playlistId);
 
@@ -695,6 +703,10 @@ const renderPlaylistSongs = async (name, songs, playlistId = null) => {
 };
 
 const addFunctionalityToPlaylistSelect = (select) => {
+  select.addEventListener('click', (e) => {
+    e.stopPropagation();
+  })
+
   select.addEventListener('change', async (e) => {
     try {
       const { videoId } = e.target.dataset;
@@ -709,7 +721,7 @@ const addFunctionalityToPlaylistSelect = (select) => {
       const response = await addSongToPlaylist(playlistId, videoId);
     
       if (!response.error) {
-        playlistSongNum.textContent = `${numberofSongs + 1} songs`;
+        playlistSongNum.textContent = `${numberofSongs + 1} ${numberofSongs + 1 == 1 ? 'song' : 'songs'}`;
         displayAlert('success', 'Added to playlist!');
       } else {
         displayAlert('warning', `Failed to add song to playlist: ${response.error}`);
@@ -720,12 +732,65 @@ const addFunctionalityToPlaylistSelect = (select) => {
   });
 }
 
+const addGeneratedPlaylist = (name) => {
+  const playlistItem = createNewPlaylist({name, songsNum: lofiPlaylist.generatedPlaylist.length})
+
+  playlistItem.addEventListener('click', () => {
+    renderPlaylistSongs(name, lofiPlaylist.generatedPlaylistData);
+
+    lofiPlaylist.quedPlaylist = lofiPlaylist.generatedPlaylist;
+    lofiPlaylist.cuedPlaylistData = lofiPlaylist.generatedPlaylistData;
+  })
+}
+
+const createNewPlaylist = ({id, name, songsNum}) => {
+  const playlistContainer = document.querySelector(
+    '.playlist-items-container'
+  );
+  const playlistItem = document.createElement('div');
+  const playlistName = document.createElement('div');
+  const playlistSongNum = document.createElement('div');
+  const playlistButtonsContainer = document.createElement('div');
+  const playlistDetailsContainer = document.createElement('div');
+
+  playlistItem.className = 'playlist-item d-flex justify-content-between rounded';
+  playlistItem.dataset.playlistName = name;
+
+  playlistName.className = 'playlist-name text-truncate';
+  playlistName.textContent = name;
+
+  playlistSongNum.textContent = songsNum ? `${songsNum} songs` : '0 songs';
+  playlistSongNum.className = 'playlist-songs-num';
+
+  playlistDetailsContainer.classList = 'playlist-item-details-container';
+  playlistButtonsContainer.classList = 'playlist-item-btns-container d-flex';
+
+  if (id) {
+    const playlistOption = document.createElement('option');
+
+    playlistItem.dataset.playlistId = id;
+
+    playlistOption.value = id;
+    playlistOption.textContent = name;
+    addToPlaylistSelect.append(playlistOption);
+    addFunctionalityToPlaylists([playlistItem]);
+  }
+
+  playlistDetailsContainer.append(playlistName, playlistSongNum);
+  playlistItem.append(playlistDetailsContainer, playlistButtonsContainer);
+  playlistContainer.append(playlistItem);
+
+  displayAlert('success', 'Playlist Created!')
+
+  return playlistItem;
+}
+
 const addFunctionalityToPlaylists = (playlists) => {
   playlists.forEach((playlist) => {
     const playlistName = playlist.querySelector('.playlist-name');
 
     // Load the playlist songs
-    playlistName.addEventListener('click', async () => {
+    playlist.addEventListener('click', async () => {
       try {
         const response = await fetchPlaylist(
           playlist.dataset.playlistId
@@ -755,23 +820,26 @@ const addFunctionalityToPlaylists = (playlists) => {
     // Add button to delete + rename playlist if playlist isn't the favorites playlist
     if (playlist.dataset.playlistName !== 'Favorites') {
       const deletePlaylistButton = document.createElement('button');
-      const playlistContainer = playlist.parentElement;
-
       const renameButton = document.createElement('button');
+      const playlistContainer = playlist.parentElement;
+      const playlistButtonsContainer = playlist.querySelector('.playlist-item-btns-container');
 
-      renameButton.textContent = 'Rename';
+      renameButton.append(getIcon('rename', 5));
       renameButton.className = 'rename-playlist-btn btn';
-      renameButton.addEventListener('click', () => {
+      renameButton.addEventListener('click', (e) => {
+        e.stopPropagation();
         toggleGreyedOutBackground();
-        toggleClass(renamePlaylistModal, 'd-none')
+        toggleClass(renamePlaylistModal, 'd-none');
 
         confirmRename.dataset.playlistId = playlist.dataset.playlistId;
         newPlaylistNameInput.focus();
       });
 
-      deletePlaylistButton.textContent = 'Delete';
+      deletePlaylistButton.append(getIcon('Delete', 5));
       deletePlaylistButton.className = 'delete-playlist-btn btn';
-      deletePlaylistButton.addEventListener('click', async () => {
+      deletePlaylistButton.addEventListener('click', async (e) => {
+        e.stopPropagation();
+
         try {
           const response = await deletePlaylist(playlist.dataset.playlistId);
 
@@ -793,7 +861,7 @@ const addFunctionalityToPlaylists = (playlists) => {
         }
       });
 
-      playlist.append(renameButton, deletePlaylistButton);
+      playlistButtonsContainer.append(renameButton, deletePlaylistButton);
     }
   });
 };
@@ -803,32 +871,39 @@ backToPlaylists.addEventListener('click', () => {
   toggleClass(playlistSongsContainer, 'd-none');
 })
 
-dicoverSongsButton.addEventListener('click', async (e) => {
+dicoverSongsButton.addEventListener('click', async () => {
   try {
-    e.target.disabled = true;
+    toggleClass(dicoverSongsButton, 'd-none');
+    toggleClass(loadingSongsImage, 'd-none');
+
+    const existingPlaylist =  document.querySelector(".playlist-item[data-playlist-name='Made for You']");
+
+    if (existingPlaylist) {
+      existingPlaylist.remove();
+    }
+
     const response = await fetchDiscoverySongs();
-
-    renderPlaylistSongs(
-      "Made for You",
-      response.data.songs
-    );
-
     const songIds = response.data.songs.map((song) => song.id);
 
-    lofiPlaylist.quedPlaylist = songIds;
-    lofiPlaylist.cuedPlaylistData = response.data.songs;
+    lofiPlaylist.generatedPlaylist = songIds;
+    lofiPlaylist.generatedPlaylistData = response.data.songs;
 
-    e.target.disabled = false;
+    addGeneratedPlaylist('Made for You');
+
+    toggleClass(dicoverSongsButton, 'd-none');
+    toggleClass(loadingSongsImage, 'd-none');
   } catch (err) {
     displayAlert('danger', `Internal error occured trying to generate playlist: ${err.message}`);
     console.log('Error getting discover songs: ', err.message);
-    e.target.disabled = false;
+
+    toggleClass(dicoverSongsButton, 'd-none');
+    toggleClass(loadingSongsImage, 'd-none');
   }
 });
 
-favoriteButton.addEventListener('click', async (e) => {
+favoriteButton.addEventListener('click', async () => {
   try {
-    const { videoId } = e.target.dataset;
+    const { videoId } = favoriteButton.dataset;
     const favoritesPlaylistId = favoritesPlaylist.dataset.playlistId;
     const favoritesPlaylistSongNum = favoritesPlaylist.querySelector(
       '.playlist-songs-num'
@@ -870,34 +945,8 @@ newPlaylistModel.addEventListener('submit', async (e) => {
 
     if (!response.error) {
       const { id, name } = response.data.playlist;
-
-      const playlistContainer = document.querySelector(
-        '.playlist-items-container'
-      );
-      const playlistItem = document.createElement('div');
-      const playlistName = document.createElement('div');
-      const playlistOption = document.createElement('option');
-      const playlistSongNum = document.createElement('div');
-
-      playlistItem.dataset.playlistId = id;
-      playlistItem.dataset.playlistName = name;
-      playlistItem.className = 'playlist-item';
-
-      playlistName.className = 'playlist-name';
-      playlistName.textContent = name;
-
-      playlistOption.value = id;
-      playlistOption.textContent = name;
-
-      playlistSongNum.textContent = '0 songs';
-      playlistSongNum.className = 'playlist-songs-num';
-
-      playlistItem.append(playlistName, playlistSongNum);
-      playlistContainer.append(playlistItem);
-      addToPlaylistSelect.append(playlistOption);
-
-      addFunctionalityToPlaylists([playlistItem]);
-      displayAlert('success', 'Playlist Created!')
+  
+      createNewPlaylist({id, name});
     } else {
       displayAlert('warning', `Failed to create playlist: ${response.error}`)
     }
@@ -924,8 +973,6 @@ renamePlaylistModal.addEventListener('submit', async (e) => {
       playlistId,
       newPlaylistNameInput.value
     );
-
-    console.log('response renaming playlist: ', response);
 
     if (!response.error) {
       playlistElement.dataset.playlistName = newPlaylistNameInput.value;

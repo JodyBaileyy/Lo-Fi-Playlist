@@ -168,7 +168,7 @@ def discover():
 def playlist():
     time_period = get_time_period()
 
-    playlists = Playlist.query.filter_by(user_id=current_user.id).all()
+    playlists = Playlist.query.filter_by(user_id=current_user.id).order_by(Playlist.id).all()
 
     return render_template(
         "playlist.html",

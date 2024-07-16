@@ -3,6 +3,7 @@
   --primary-clr-violet: #432575;
   --primary-clr-brown: #dfb371;
   --primary-clr-blue: #719dde;
+  --primary-clr-light-blue: #719dde8a;
   --primary-clr-black: #1c1c1c;
   --primary-clr-white: #f1f0f0f0;
   --primary-clr-grey: #a8a8a8ec;
@@ -163,12 +164,18 @@ header {
 }
 
 /* Playlist Elements */
-.playlist-alert {
+.playlist-alert-container {
+  position: sticky;
   top: 13%;
   z-index: 3;
 }
 
-.playlist-heading {
+.playlists-heading {
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+}
+
+.playlist-heading-greeting {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -178,7 +185,11 @@ header {
   height: 50vh;
 }
 
-.playlist-heading-text {
+.loading-songs-img {
+  width: 5rem;
+}
+
+.playlist-heading-greeting-text {
   font-family: 'Amatic SC', sans-serif;
   font-size: 5rem;
   color: white;
@@ -204,7 +215,7 @@ header {
 }
 
 .player-song-time-container {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: 'IBM Plex Mono', monospace;
   font-weight: 300;
 }
 
@@ -233,7 +244,7 @@ header {
 }
 
 .playlist-song:hover {
-  background-color: #719dde8a;
+  background-color: var(--primary-clr-light-blue);
   border-radius: 30px;
 }
 
@@ -267,20 +278,54 @@ header {
   cursor: pointer;
 }
 
-.new-playlist-modal {
+.playlist-modal {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 28%;
   z-index: 2;
+  padding: 2rem;
+  background-color: var(--primary-clr-black);
+  color: var(--primary-clr-white);
 }
 
-.rename-playlist-modal {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 28%;
-  z-index: 2;
+.new-playlist-btn {
+  font-size: 1.2rem;
+}
+
+.playlist-item {
+  max-width: 57rem;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border: 1.5px solid var(--primary-clr-green);
+}
+
+.playlist-item:hover {
+  border-radius: 5px;
+  background-image: linear-gradient(
+    to right,
+    var(--primary-clr-green),
+    var(--primary-clr-blue)
+  );
+}
+
+.playlist-item:hover .playlist-songs-num {
+  color: var(--primary-clr-white);
+}
+
+.playlist-name {
+  font-size: 1.5rem;
+  max-width: 49rem;
+}
+
+.playlist-songs-num {
+  color: var(--primary-clr-violet);
+}
+
+.discover-lofi-songs-btn {
+  padding: 0.7rem;
+  margin: 1rem 0;
+  border: 2px solid var(--primary-clr-blue);
 }
 
 .cancel-rename {

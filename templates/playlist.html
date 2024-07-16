@@ -1,29 +1,36 @@
 {% extends 'layout.html' %}
 
 {% block header %}
-  <div class="playlist-heading", style="background-image: var(--background-filter), url('{{ image }}'); background-position: {{ position }}">
-    <h2 class="playlist-heading-text">Good {{ time_period }}, {{ name }}</h2>
+  <div class="playlist-heading-greeting", style="background-image: var(--background-filter), url('{{ image }}'); background-position: {{ position }}">
+    <h2 class="playlist-heading-greeting-text">Good {{ time_period }}, {{ name }}</h2>
   </div>
 {% endblock %}
 
 {% block main %}
+  <div class="playlist-alert-container"></div>
   <div class="greyed-out-background d-none"></div>
   <div class="playlist-container container-fluid">
-    <h3>Playlists</h3>
+    <h3 class="playlists-heading">Playlists</h3>
     <div class="playlist-items-container">
       {% for playlist in playlists %}
-      <div class="playlist-item" data-playlist-id="{{ playlist.id }}" data-playlist-name="{{ playlist.name }}">
-        <div class="playlist-name">{{ playlist.name }}</div>
-        <div class="playlist-songs-num">{{ playlist.songs | length }} songs</div>
+      <div class="playlist-item d-flex justify-content-between rounded" data-playlist-id="{{ playlist.id }}" data-playlist-name="{{ playlist.name }}">
+        <div class="playlist-item-details-container">
+          <div class="playlist-name text-truncate">{{ playlist.name }}</div>
+          <div class="playlist-songs-num">{{ playlist.songs | length }} {% if playlist.songs | length == 1 %}song{% else %}songs{% endif %}</div>
+        </div>
+        <div class="playlist-item-btns-container d-flex"></div>
       </div>
       {% endfor %}
     </div>
-    <button class="btn new-playlist" type="button">
+    <div class="discover-lofi-songs-container">
+      <img class="loading-songs-img d-none" src="{{ url_for('static', filename='images/loading.svg') }}" alt="loading playlist icon">
+      <button class="discover-lofi-songs-btn d-block rounded" type="button">Generate Lofi Playlist</button>
+    </div>
+    <button class="btn new-playlist-btn" type="button">
       <i class="bi bi-plus-circle"></i>
       New Playlist
     </button>
-    <button class="discover-lofi-songs-btn btn" type="button">Discover new Lofi Songs</button>
-    <form class="new-playlist-modal d-none position-fixed">
+    <form class="new-playlist-modal playlist-modal d-none position-fixed rounded">
       <h4 class="text-center p-2">Create Playlist</h4>
       <input type="text" placeholder="Playlist Name" class="name-input form-control mb-3" required>
       <div class="create-playlist-btns-container d-flex justify-content-between">
@@ -31,7 +38,7 @@
         <button type="submit" class="create-playlist btn btn-success">Create</button>
       </div>
     </form>
-    <form class="rename-playlist-modal d-none position-fixed">
+    <form class="rename-playlist-modal playlist-modal d-none position-fixed rounded">
       <h4 class="text-center p-2">Rename Playlist</h4>
       <input class="new-name-input form-control mb-3" type="text" placeholder="New Name" required>
       <div class="rename-btns-container d-flex justify-content-between">
