@@ -9,7 +9,7 @@
     {% include 'alert.html' %}
     <input type="text" class="form-control form-input my-3 mx-4" placeholder="Username" name="username" autocomplete="false" autofocus required>
     <input type="password" class="form-control form-input my-3 mx-4" placeholder="Password" name="password" required/>
-    <p class="text-center">Don't have an account? Register <a href="{{url_for('register')}}">here</a></p>
+    <p class="text-center">Don't have an account? <a href="{{url_for('register')}}" class="link">Register here</a></p>
     <button class="btn btn-primary mt-3" type="submit">Login</button>
 </form>
 {% endblock %}

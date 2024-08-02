@@ -18,7 +18,7 @@
 {% block main %}
     {% with
        image_url=url_for("static", filename="images/office.gif"),
-       image_alt='Gif of an office on a rainy day',
+       image_alt='Gif of an office on a rainy day.',
        card_content='
          <h1 class="underline underline-green content-heading">What is Lo-Fi?</h1>
          <p>Lo-Fi (or lofi) is a style of music which usually consists of relaxing and calming instrumental beats. Most lofi songs consist of grainy or textural sounds, giving it a natural and tranquil quality, which contributes to the songs calming vibe</p>
@@ -30,11 +30,11 @@
 
     {% with
       image_url=url_for("static", filename="images/calm_room.gif"),
-      image_alt='Gif of a cozy room at night',
+      image_alt='Gif of a cozy room at night.',
       flex_direction='flex-row-reverse',
       card_content='
         <h2 class="underline underline-green content-heading">Discover Lo-Fi</h2>
-        <p>Want to discover lofi songs for yourself and see what this style of music has to offer? Visit <a href="/playlist">here</a> to discover lofi songs and create your own lofi playlists! Every song you discover will be unique to you so you do not have any repeat songs playing</p>
+        <p>Want to discover lofi songs for yourself and see what this style of music has to offer? <a href="/playlist" class="link">Visit here to discover lofi songs</a> and create your own lofi playlists! Every song you discover will be unique to you so you do not have any repeat songs playing</p>
       '
     %}
       {% include 'lofi_info_card.html' %}

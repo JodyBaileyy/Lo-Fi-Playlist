@@ -367,7 +367,7 @@ def update_playlist_name():
     if not new_playlist_name or not playlist_id:
         return jsonify(
             json_response(
-                error="Playlist id or new playlist name not provided")
+                error="Playlist id or name not provided")
         )
     
     try:

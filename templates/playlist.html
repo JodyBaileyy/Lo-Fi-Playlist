@@ -2,111 +2,116 @@
 
 {% block header %}
   <div class="playlist-heading-greeting", style="background-image: var(--background-filter), url('{{ image }}'); background-position: {{ position }}">
-    <h2 class="playlist-heading-greeting-text">Good {{ time_period }}, {{ name }}</h2>
+    <h2 class="playlist-heading-greeting-text mx-3">Good {{ time_period }}, {{ name }}</h2>
   </div>
 {% endblock %}
 
 {% block main %}
-  <div class="playlist-alert-container"></div>
+  <div class="playlist-alert-container px-2"></div>
   <div class="greyed-out-background d-none"></div>
   <div class="playlist-container container-fluid">
     <h3 class="playlists-heading">Playlists</h3>
-    <div class="playlist-items-container">
+    <ul class="playlist-items-container">
       {% for playlist in playlists %}
-      <div class="playlist-item d-flex justify-content-between rounded" data-playlist-id="{{ playlist.id }}" data-playlist-name="{{ playlist.name }}">
-        <div class="playlist-item-details-container">
-          <div class="playlist-name text-truncate">{{ playlist.name }}</div>
+      <li class="playlist-item d-flex justify-content-between rounded blue-border existing-playlist scale-hover-1" data-playlist-id="{{ playlist.id }}" data-playlist-name="{{ playlist.name }}" tabindex="0">
+        <div class="playlist-item-details-container text-truncate">
+          <div class="playlist-name text-truncate" title="{{ playlist.name }}">{{ playlist.name }}</div>
           <div class="playlist-songs-num">{{ playlist.songs | length }} {% if playlist.songs | length == 1 %}song{% else %}songs{% endif %}</div>
         </div>
         <div class="playlist-item-btns-container d-flex"></div>
-      </div>
+      </li>
       {% endfor %}
-    </div>
+    </ul>
     <div class="discover-lofi-songs-container">
-      <img class="loading-songs-img d-none" src="{{ url_for('static', filename='images/loading.svg') }}" alt="loading playlist icon">
-      <button class="discover-lofi-songs-btn d-block rounded" type="button">Generate Lofi Playlist</button>
+      <button class="discover-lofi-songs-btn d-block rounded gradient-border scale-hover-2" type="button">Generate Lofi Playlist</button>
     </div>
-    <button class="btn new-playlist-btn" type="button">
+    <button class="btn new-playlist-btn icon-button scale-hover-3" type="button">
       <i class="bi bi-plus-circle"></i>
       New Playlist
     </button>
     <form class="new-playlist-modal playlist-modal d-none position-fixed rounded">
-      <h4 class="text-center p-2">Create Playlist</h4>
+      <h4 class="modal-title text-center p-2">Create Playlist</h4>
       <input type="text" placeholder="Playlist Name" class="name-input form-control mb-3" required>
       <div class="create-playlist-btns-container d-flex justify-content-between">
-        <button type="button" class="cancel-create btn btn-danger">Cancel</button>
-        <button type="submit" class="create-playlist btn btn-success">Create</button>
+        <button type="button" class="modal-btn cancel-create btn btn-danger scale-hover-2">Cancel</button>
+        <button type="submit" class="modal-btn create-playlist btn btn-success scale-hover-2">Create</button>
       </div>
     </form>
     <form class="rename-playlist-modal playlist-modal d-none position-fixed rounded">
-      <h4 class="text-center p-2">Rename Playlist</h4>
+      <h4 class="modal-title text-center p-2">Rename Playlist</h4>
       <input class="new-name-input form-control mb-3" type="text" placeholder="New Name" required>
       <div class="rename-btns-container d-flex justify-content-between">
-        <button type="button" class="cancel-rename btn btn-danger">Cancel</button>
-        <button type="submit" class="confirm-rename btn btn-success">Rename</button>
+        <button type="button" class="modal-btn cancel-rename btn btn-danger scale-hover-2">Cancel</button>
+        <button type="submit" class="modal-btn confirm-rename btn btn-success scale-hover-2">Rename</button>
       </div>
     </form>
   </div>
  
 
-  <div class="playlist-songs-container d-none">
-    <button class="btn d-flex align-items-center" id="back-to-playlists-btn">
-      <i class="bi bi-arrow-left fs-3"></i>
-      <p class="back-to-playlist-txt m-0 fs-4 px-2">Back to Playlists</p>
-    </button>
-    <div class="playlist-header d-flex align-items-center">
-      <button class="play-playlist-btn btn">
+  <ul class="playlist-songs-container d-none">
+    <li id="back-to-playlists-container">
+      <button class="btn d-flex align-items-center icon-button scale-hover-3" id="back-to-playlists-btn" aria-label="back to playlists">
+        <i class="bi bi-arrow-left fs-3"></i>
+        <p class="back-to-playlist-txt m-0 fs-4 px-2">Back to Playlists</p>
+      </button>
+    </li>
+    <li class="playlist-header d-flex align-items-center">
+      <button class="play-playlist-btn icon-button btn scale-hover-3" aria-label="play playlist">
         <i class="bi bi-play-circle-fill fs-1"></i>
       </button>
       <div class="playlist-header-title fs-1 px-3"></div>
-    </div>
-    {% for song in playlist_items %}
-      <div class="playlist-song" data-video-id="{{ song['id'] }}">
-        <button class="play-playlist-song-btn btn">Play/Pause</button>
-        title: {{ song['snippet']['title'] }}   duration: {{ song['contentDetails']['duration'][2:] }}
-      </div>
-    {% endfor %}
-  </div>
+    </li>
+  </ul>
 
-  <div class="player-widget position-fixed d-flex flex-column border border-black rounded shadow-lg d-none">
-    <div class="player-info-container d-flex align-items-center">
+  <div class="player-widget position-fixed d-flex border border-black rounded shadow-lg d-none">
+    <div class="player-info-container d-flex align-items-center text-truncate">
       <img class="player-song-thumbnail rounded m-3">
-      <div class="current-song-details-container me-3">
+      <div class="current-song-details-container me-3 text-truncate">
         <div class="player-song-title text-truncate pt-3"></div>
         <div class="player-song-time-container d-flex pb-3">
           <div class="player-elapsed-time me-1"></div> / <div class="player-song-total-time ms-1"></div>
         </div>
       </div>
     </div>
-    <div class="player-interface-container d-flex justify-content-around">
-      <button class="btn" id="previous">
-        <i class="bi bi-caret-left-fill fs-2 text-light"></i>
-      </button>
-      <button class="btn" id="play-pause">
-        <i class="bi bi-play-circle-fill fs-2 text-light"></i>
-      </button>
-      <button class="btn" id="next">
-        <i class="bi bi-caret-right-fill fs-2 text-light"></i>
-      </button>
-      <button class="btn" id="favorite">
-        <i class="bi bi-heart fs-2 text-light"></i>
-      </button>
-      <div class="add-to-playlist-container position-relative">
-        <button class="btn" id="add-to-playlist-btn">
+    <ul class="player-interface-container d-flex justify-content-around">
+      <li>
+        <button class="btn scale-hover-3 icon-button" id="previous" aria-label="previous song">
+          <i class="bi bi-caret-left-fill fs-2 text-light"></i>
+        </button>
+      </li>
+      <li>
+        <button class="btn scale-hover-3 icon-button" id="play-pause" aria-label="pause / play song">
+          <i class="bi bi-play-circle-fill fs-2 text-light"></i>
+        </button>
+      </li>
+      <li>
+        <button class="btn scale-hover-3 icon-button" id="next" aria-label="next song">
+          <i class="bi bi-caret-right-fill fs-2 text-light"></i>
+        </button>
+      </li>
+      <li>
+        <button class="btn scale-hover-3 icon-button" id="favorite" aria-label="favorite song">
+          <i class="bi bi-heart fs-2 text-light"></i>
+        </button>
+      </li>
+      <li class="add-to-playlist-container position-relative scale-hover-3">
+        <button class="btn" id="add-to-playlist-btn" aria-label="add song to playlist" tabindex="-1">
           <i class="bi bi-folder-plus fs-2 text-light"></i>
         </button>
-        <select class="add-to-playlist position-absolute">
+        <select class="add-to-playlist position-absolute icon-button" tabindex="0" aria-label="Add song to playlist">
           <option selected disabled>--</option>
           {% for playlist in playlists %}
             <option value="{{ playlist.id }}">{{ playlist.name }}</option>
           {% endfor %}
         </select>
-      </div>
-    </div>
+      </li>
+    </ul>
   </div>
 
-  <!-- The YouTube <iframe> (and video player) will replace this <div> tag. -->
-  <div id="player" class="d-none"></div>
+  <div class="yt-video-container d-none">
+      <!-- The YouTube <iframe> (and video player) will replace this <div> tag. -->
+      <div id="player"></div>
+    </div>
 
-  <script src="{{ url_for('static', filename='index.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='javascript/index.js') }}" defer type="module"></script>
 {% endblock %}
