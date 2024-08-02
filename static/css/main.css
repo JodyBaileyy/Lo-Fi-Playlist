@@ -1,0 +1,314 @@
+:root {
+  --primary-clr-green: #2a9d8f;
+  --primary-clr-violet: #432575;
+  --primary-clr-brown: #dfb371;
+  --primary-clr-blue: #719dde;
+  --primary-clr-bright-green: #46decb;
+  --primary-clr-light-green: #4db6a9c7;
+  --primary-clr-red: #eb2020;
+  --primary-clr-black: #1c1c1c;
+  --primary-clr-white: #f1f0f0f0;
+  --primary-clr-grey: #a8a8a8ec;
+  --background-filter: linear-gradient(rgba(0, 0, 0, 55%), rgba(0, 0, 0, 55%));
+}
+
+.main-container {
+  min-height: 100vh;
+}
+
+main,
+footer {
+  font-family: 'Comfortaa', Helvetica;
+}
+
+body {
+  background-color: var(--primary-clr-white);
+}
+
+main {
+  margin: 3% 10%;
+  flex: 1;
+}
+
+header {
+  font-family: 'Italianno', cursive;
+}
+
+.navbar-brand {
+  font-family: 'Italianno', cursive;
+  color: white;
+}
+
+.navbar-brand:hover {
+  color: var(--primary-clr-bright-green) !important;
+}
+
+.nav-link {
+  font-family: 'Comfortaa', Helvetica;
+  color: white;
+}
+
+.nav-link:focus-visible,
+.navbar-brand:focus-visible {
+  color: var(--primary-clr-bright-green) !important;
+}
+
+.link {
+  color: var(--primary-clr-violet);
+}
+
+.nav-link:hover {
+  color: var(--primary-clr-bright-green);
+}
+
+.navbar {
+  background-color: var(--primary-clr-black) !important;
+  border-bottom: solid 0.1rem var(--primary-clr-white);
+}
+
+.navbar-toggler {
+  background-color: var(--primary-clr-green);
+}
+
+.alert-container {
+  font-family: 'Comfortaa', Helvetica;
+  width: 100%;
+  min-width: 25rem;
+  font-size: 0.8rem;
+}
+
+.footer {
+  border-top: solid 0.1rem var(--primary-clr-white);
+  height: 10rem;
+  background-color: var(--primary-clr-black);
+  color: var(--primary-clr-white);
+}
+
+@media (max-width: 1310px) {
+  .lofi-info-content {
+    font-size: 80%;
+    line-height: 170%;
+  }
+
+  .content-heading {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 1050px) {
+  main {
+    margin: 3% 0;
+  }
+
+  .playlist-item {
+    max-width: 100%;
+  }
+
+  .player-widget {
+    flex-direction: row;
+    max-width: max-content;
+    margin-right: 1.5rem;
+    width: auto;
+    min-width: 100vw;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-image: linear-gradient(
+      to right,
+      var(--primary-clr-black),
+      var(--primary-clr-green)
+    );
+  }
+
+  .player-info-container {
+    flex: 1;
+    background-color: unset;
+  }
+
+  .player-interface-container {
+    background-image: none;
+    margin: 0 1rem;
+  }
+}
+
+@media (max-width: 845px) {
+  .home-header-text-start {
+    font-size: 5rem;
+  }
+
+  .home-header-text-qualities-container {
+    font-size: 2rem;
+    margin-top: 2rem;
+  }
+
+  .lofi-picture-card {
+    display: none;
+  }
+
+  .player-widget {
+    flex-direction: column;
+    background-image: none;
+  }
+
+  .player-interface-container {
+    background-image: linear-gradient(
+      to bottom,
+      var(--primary-clr-black),
+      var(--primary-clr-green)
+    );
+    margin: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .playlist-heading-greeting-text {
+    font-size: 3.5rem;
+  }
+
+  .playlist-heading-greeting {
+    height: 30vh;
+  }
+
+  .playlists-heading {
+    font-size: 1.7rem;
+    margin-bottom: 1rem;
+  }
+
+  .playlist-name {
+    font-size: 1.2rem;
+  }
+
+  .new-playlist-btn {
+    font-size: 1rem;
+  }
+
+  .playlist-songs-num,
+  .discover-lofi-songs-btn {
+    font-size: 0.8rem;
+  }
+
+  .playlist-alert-container {
+    font-size: 0.8rem;
+  }
+
+  .playlist-song-title {
+    font-size: 0.9rem;
+  }
+
+  .playlist-song-duration {
+    font-size: 0.7rem;
+  }
+
+  .playlist-song-thumbnail,
+  .player-song-thumbnail {
+    max-width: 5rem;
+  }
+
+  .player-song-title {
+    font-size: 0.8rem;
+  }
+
+  .player-song-time-container {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 580px) {
+  .home-header-text-start {
+    margin: 5rem 0 0 0;
+  }
+
+  .home-header-text-qualities-container {
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .playlist-modal {
+    width: 90%;
+  }
+
+  .modal-title {
+    font-size: 1rem;
+  }
+
+  .modal-btn {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .alert-container {
+    min-width: 85vw;
+    width: auto;
+  }
+
+  .home-header-image {
+    display: none;
+  }
+
+  .home-header-text {
+    position: static;
+    transform: none;
+    background-image: var(--background-filter), url('../images/cyberpunk.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .home-header-text-start {
+    margin: 0;
+  }
+
+  .home-header-text-qualities-container {
+    margin: auto;
+    flex-direction: column;
+    font-size: 2.5rem;
+    font-weight: bolder;
+  }
+
+  .footer-text {
+    height: 5rem;
+    background-color: var(--primary-clr-blue);
+  }
+}
+
+@media (max-width: 400px) {
+  .playlist-song-thumbnail {
+    display: none;
+  }
+
+  .playlist-heading-greeting {
+    height: 20vh;
+  }
+
+  .playlist-heading-greeting-text {
+    font-size: 2.5rem;
+  }
+
+  .playlists-heading {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .playlist-name {
+    font-size: 1rem;
+  }
+
+  .playlist-songs-num {
+    font-size: 0.6rem;
+  }
+
+  .new-playlist-btn {
+    font-size: 0.8rem;
+  }
+
+  .playlist-song-title {
+    font-size: 0.7rem;
+  }
+
+  .playlist-song-duration {
+    font-size: 0.6rem;
+  }
+}

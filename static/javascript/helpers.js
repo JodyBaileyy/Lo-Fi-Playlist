@@ -357,7 +357,7 @@ const addFunctionalityToPlaylist = async (playlist, name) => {
     }
   } catch (err) {
     displayAlert('danger', `Internal error occured trying to load playlist: ${err.message}`);
-    console.log('Error getting playlist songs: ', err.message);
+    console.log('Error getting playlist songs: ', err);
 
     playlist.style.pointerEvents = 'auto';
     toggleClass(playlist, 'loading-gradient-background');
@@ -398,7 +398,7 @@ const addFunctionalityToDeletePlaylistButton = async (playlist) => {
     }
   } catch (err) {
     displayAlert('danger', `Internal error occured trying to delete playlist: ${err.message}`);
-    console.log('error occured trying to delete playlist: ', err.message);
+    console.log('error occured trying to delete playlist: ', err);
   }
 };
 

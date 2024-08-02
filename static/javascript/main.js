@@ -59,7 +59,7 @@ const initRenamePlaylistModal = () => {
         'danger',
         `Internal error occurred while renaming playlist: ${err.message}`
       );
-      console.log('Internal Error updating playlist name: ', err.message);
+      console.log('Internal Error updating playlist name: ', err);
     } finally {
       newPlaylistNameInput.value = '';
       addClasses(renamePlaylistModal, 'd-none');
@@ -108,7 +108,7 @@ const initDiscoverSongsButton = () => {
       toggleClass(dicoverSongsButton, 'd-none');
     } catch (err) {
       displayAlert('danger', `Internal error occured trying to generate playlist: ${err.message}`);
-      console.log('Error getting discover songs: ', err.message);
+      console.log('Error getting discover songs: ', err);
 
       removeElement(spinner);
       toggleClass(dicoverSongsButton, 'd-none');

@@ -39,12 +39,14 @@ class Playlist {
   
   createPlayingSongInterval() {
     this.playingSongInterval = setInterval(async () => {
-      // If songs has been played for 10 or more seconds
-      if (player.playerInfo.currentTime >= 10) {
+      const percentageListened = player.getCurrentTime() / player.getDuration() * 100;
+
+      // If songs has been playing for >=10% of its total duration, mark the song as listened
+      if (percentageListened >= 10) {
         try {
           await addSongToListenedList(this.playingSong);
         } catch (err) {
-          console.log('error occured adding song to listened list: ', err.message);
+          console.log('error occured adding song to listened list: ', err);
         } finally {
           clearInterval(this.playingSongInterval);
         }
