@@ -9,11 +9,8 @@ from helpers import (
     get_paginated_video_details,
     get_paginated_playlist_videos,
     get_paginated_searched_lofi_video_ids,
-    LOFI_GIRL_PLAYLIST_ID,
-    CHILLHOP_MUSIC_PLAYLIST_ID,
-    BACKGROUND_IMAGES,
-    FAVORITES
 )
+from constants import LOFI_GIRL_PLAYLIST_ID, CHILLHOP_MUSIC_PLAYLIST_ID, BACKGROUND_IMAGES, FAVORITES
 from app import create_app, login_manager, db
 from models import User, Playlist, PlaylistSong, ListenedSong
 
@@ -168,7 +165,8 @@ def discover():
 def playlist():
     time_period = get_time_period()
 
-    playlists = Playlist.query.filter_by(user_id=current_user.id).order_by(Playlist.id).all()
+    playlists = Playlist.query.filter_by(
+        user_id=current_user.id).order_by(Playlist.id).all()
 
     return render_template(
         "playlist.html",
@@ -179,10 +177,12 @@ def playlist():
         playlists=playlists,
     )
 
+
 @app.route("/playlists")
 @login_required
 def user_playlists():
-    playlists = list(map(lambda playlist: {"id": playlist.id, "name": playlist.name}, current_user.playlists))
+    playlists = list(map(lambda playlist: {
+                     "id": playlist.id, "name": playlist.name}, current_user.playlists))
 
     return jsonify(
         json_response(data={'playlists': playlists})
@@ -295,14 +295,14 @@ def add_playlist():
         return jsonify(
             json_response(error='A name for the playlist was not provided')
         )
-    
 
     existing_playlist = Playlist.query.filter_by(
         name=playlist_name, user_id=current_user.id).first()
 
     if existing_playlist:
         return jsonify(
-            json_response(error=f"Playlist with name {playlist_name} already exists")
+            json_response(error=f"Playlist with name {
+                          playlist_name} already exists")
         )
 
     new_playlist = Playlist(name=playlist_name, user_id=current_user.id)
@@ -324,7 +324,7 @@ def remove_playlist():
         return jsonify(
             json_response(error="Playlist ID not provided")
         )
-    
+
     try:
         playlist_id = int(playlist_id)
     except ValueError:
@@ -362,14 +362,13 @@ def remove_playlist():
 def update_playlist_name():
     new_playlist_name = request.args.get('name')
     playlist_id = request.args.get('playlistId')
-    
 
     if not new_playlist_name or not playlist_id:
         return jsonify(
             json_response(
                 error="Playlist id or name not provided")
         )
-    
+
     try:
         playlist_id = int(playlist_id)
     except ValueError:
@@ -389,14 +388,15 @@ def update_playlist_name():
         return jsonify(
             json_response(error="Favorites playlist cannot be renamed")
         )
-    
+
     user_playlist.name = new_playlist_name
 
-    try: 
+    try:
         db.session.commit()
     except IntegrityError:
         return jsonify(
-            json_response(error=f"Playlist with name '{new_playlist_name}' already exists")
+            json_response(error=f"Playlist with name '{
+                          new_playlist_name}' already exists")
         )
 
     return jsonify(
