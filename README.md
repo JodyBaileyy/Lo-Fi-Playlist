@@ -1,6 +1,7 @@
 # Lo-Fi-Playlist
 Final Project for CS50x course
 Created by Jody Bailey
+[YouTube video for final project](https://youtu.be/23el6WggJ-o)
 
 ## What Is This Project? 
 A Lofi playlist application written in Flask. It allows users to create their Lofi playlists and discover Lofi songs unique to them
@@ -22,6 +23,8 @@ The data API is used for collecting videos and information about those videos, w
 
 A song is marked as listened when you have listened to 10% or more of a song. For example, if you are listening to a song that is 2 minutes long, it will be marked a listened once you have listened to the song for at least 12 seconds.
 
+[Find a visual representation of how this works here](https://whimsical.com/lo-fi-project-PZ1kvQDseeqvyuQR5WxzSA@2bsEvpTYSt1Hj3eUP7eC7qL861ktvUfiqXf)
+
 ## Developer Guide
 - Create a python virtual environment `python -m venv .venv` and activate the environment `source .venv/bin/activate` (The version used for developing the project was Python 3.12.2) 
 - Install dependencies `pip install -r requirements.txt`
@@ -33,7 +36,7 @@ A song is marked as listened when you have listened to 10% or more of a song. Fo
 - Run `./run-prod.sh` or `./run-dev.sh`, depending on which environment you'd like to run the application on
 - Navigate to [127.0.0.1:9000](http://127.0.0.1:9000/)
 
-To get into the sqlite DB interactive terminal, run `sqlite3 instance/db.sqlite`
+To start the sqlite DB interactive terminal, run `sqlite3 instance/db.sqlite`
 
 ## Directory structure
 ### static
@@ -109,4 +112,5 @@ A helper shell script for running the Flask application in production mode
 - [UUID Generator](https://www.uuidgenerator.net/)
 - [Authentication with Flask](https://www.freecodecamp.org/news/how-to-authenticate-users-in-flask/)
 - [Flask SQL Alchemy Guide](https://www.digitalocean.com/community/tutorials/how-to-use-flask-sqlalchemy-to-interact-with-databases-in-a-flask-application)
+- [Flask Login](https://flask-login.readthedocs.io/en/latest/)
 - [ChatGPT](https://chatgpt.com/)
