@@ -1,7 +1,12 @@
-.form-input {
+.form-input, .auth-form {
   max-width: 25rem;
 }
 
 .form-heading {
   font-size: 3rem;
+  font-family: 'Comfortaa', Helvetica;
+}
+
+.input-form-label {
+  text-align: left;
 }

@@ -1,14 +1,16 @@
 {% extends 'layout.html' %}
 
 {% block header %}
-    <h1 class="text-center my-4 fw-bold form-heading">Login</h1>
+    {% include 'alert.html' %}
+    <h1 class="text-center mt-5 fw-bold form-heading">Login</h1>
 {% endblock %}
 
 {% block main %}
-<form action="/login" method="post" class="d-flex flex-column justify-content-center align-items-center px-4">
-    {% include 'alert.html' %}
-    <input type="text" class="form-control form-input my-3 mx-4" placeholder="Username" name="username" autocomplete="false" autofocus required>
-    <input type="password" class="form-control form-input my-3 mx-4" placeholder="Password" name="password" required/>
+<form action="{{ url_for('login', next=request.args.get('next')) }}" method="post" class="auth-form d-flex flex-column justify-content-center align-items-center px-4 mx-auto">
+    <label for="username" class="input-form-label w-100">Username</label>
+    <input type="text" id="username" class="form-control form-input mb-4 mt-2" placeholder="Enter your username" name="username" autocomplete="off" autofocus required>
+    <label for="password" class="input-form-label w-100">Password</label>
+    <input type="password" id="password" class="form-control form-input mb-4 mt-2" placeholder="Enter your password" name="password" required/>
     <p class="text-center">Don't have an account? <a href="{{url_for('register')}}" class="link">Register here</a></p>
     <button class="btn btn-primary mt-3" type="submit">Login</button>
 </form>

@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block header %}
-  <div class="playlist-heading-greeting", style="background-image: var(--background-filter), url('{{ image }}'); background-position: {{ position }}">
+  <div class="playlist-heading-greeting" style="background-image: var(--background-filter), url('{{ image }}'); background-position: {{ position }}">
     <h2 class="playlist-heading-greeting-text mx-3">Good {{ time_period }}, {{ name }}</h2>
   </div>
 {% endblock %}
@@ -31,7 +31,8 @@
     </button>
     <form class="new-playlist-modal playlist-modal d-none position-fixed rounded">
       <h4 class="modal-title text-center p-2">Create Playlist</h4>
-      <input type="text" placeholder="Playlist Name" class="name-input form-control mb-3" required>
+      <label for="create-playlist" class="modal-label mb-2">Playlist name</label>
+      <input id="create-playlist" type="text" placeholder="New name" class="name-input form-control mb-3" required>
       <div class="create-playlist-btns-container d-flex justify-content-between">
         <button type="button" class="modal-btn cancel-create btn btn-danger scale-hover-2">Cancel</button>
         <button type="submit" class="modal-btn create-playlist btn btn-success scale-hover-2">Create</button>
@@ -39,7 +40,8 @@
     </form>
     <form class="rename-playlist-modal playlist-modal d-none position-fixed rounded">
       <h4 class="modal-title text-center p-2">Rename Playlist</h4>
-      <input class="new-name-input form-control mb-3" type="text" placeholder="New Name" required>
+      <label for="rename-playlist" class="modal-label mb-2">New playlist name</label>
+      <input id="rename-playlist" class="new-name-input form-control mb-3" type="text" placeholder="New name" required>
       <div class="rename-btns-container d-flex justify-content-between">
         <button type="button" class="modal-btn cancel-rename btn btn-danger scale-hover-2">Cancel</button>
         <button type="submit" class="modal-btn confirm-rename btn btn-success scale-hover-2">Rename</button>
@@ -52,7 +54,7 @@
     <li id="back-to-playlists-container">
       <button class="btn d-flex align-items-center icon-button scale-hover-3" id="back-to-playlists-btn" aria-label="back to playlists">
         <i class="bi bi-arrow-left fs-3"></i>
-        <p class="back-to-playlist-txt m-0 fs-4 px-2">Back to Playlists</p>
+        <span class="back-to-playlist-txt m-0 fs-4 px-2">Back to Playlists</span>
       </button>
     </li>
     <li class="playlist-header d-flex align-items-center">
@@ -65,7 +67,7 @@
 
   <div class="player-widget position-fixed d-flex border border-black rounded shadow-lg d-none">
     <div class="player-info-container d-flex align-items-center text-truncate">
-      <img class="player-song-thumbnail rounded m-3">
+      <img class="player-song-thumbnail rounded m-3" alt="" src="">
       <div class="current-song-details-container me-3 text-truncate">
         <div class="player-song-title text-truncate pt-3"></div>
         <div class="player-song-time-container d-flex pb-3">
@@ -73,7 +75,7 @@
         </div>
       </div>
     </div>
-    <ul class="player-interface-container d-flex justify-content-around">
+    <ul class="player-interface-container d-flex justify-content-around align-items-center">
       <li>
         <button class="btn scale-hover-3 icon-button" id="previous" aria-label="previous song">
           <i class="bi bi-caret-left-fill fs-2 text-light"></i>
@@ -113,5 +115,5 @@
       <div id="player"></div>
     </div>
 
-  <script src="{{ url_for('static', filename='javascript/index.js') }}" defer type="module"></script>
+  <script src="{{ url_for('static', filename='javascript/index.js') }}" type="module"></script>
 {% endblock %}

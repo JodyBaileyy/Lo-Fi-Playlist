@@ -73,7 +73,7 @@ header {
 .alert-container {
   font-family: 'Comfortaa', Helvetica;
   width: 100%;
-  min-width: 25rem;
+  min-width: 22rem;
   font-size: 0.8rem;
 }
 
@@ -234,6 +234,10 @@ header {
   }
 
   .modal-btn {
+    font-size: 0.8rem;
+  }
+
+  .modal-label {
     font-size: 0.8rem;
   }
 }

@@ -47,7 +47,12 @@ def login():
         user = User.query.filter_by(username=username).first()
 
         if user and check_password_hash(user.password, password):
-            login_user(user)
+            redirect_path = request.args.get('next')
+            login_user(user, remember=True)
+
+            if redirect_path:
+                return redirect(redirect_path)
+
             flash("Logged in!", "success")
             return redirect(url_for("home"))
 
