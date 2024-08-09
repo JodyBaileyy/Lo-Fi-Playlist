@@ -3,6 +3,7 @@ import { getPlayingPlaylistSongElements, handleNewSongLoad } from './helpers.js'
 import { addSongToListenedList } from "./queries.js";
 import { convertToPlayerFormat, replaceClass } from './utils.js';
 import { pauseIconClass, playIconClass } from './constants.js';
+import { displayAlert } from './helpers.js';
 
 class Playlist {
   constructor() {
