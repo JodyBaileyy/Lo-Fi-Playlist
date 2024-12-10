@@ -1,6 +1,9 @@
 import { UNSTARTED, PLAYING, PAUSED, VIDEOCUED } from './constants.js';
-import { getPlayingPlaylistSongElements, handleNewSongLoad } from './helpers.js';
-import { addSongToListenedList } from "./queries.js";
+import {
+  getPlayingPlaylistSongElements,
+  handleNewSongLoad,
+} from './helpers.js';
+import { addSongToListenedList } from './queries.js';
 import { convertToPlayerFormat, replaceClass } from './utils.js';
 import { pauseIconClass, playIconClass } from './constants.js';
 import { displayAlert } from './helpers.js';
@@ -17,30 +20,31 @@ class Playlist {
     this.playingSongInterval = null;
     this.playingSong = null;
   }
-    
+
   quedPlaylistIsPlaying() {
     return this.playingPlaylist === this.quedPlaylist;
   }
-  
-    // For race conditions when the player needs to get up to date to play the video at the specified index
+
+  // For race conditions when the player needs to get up to date to play the video at the specified index
   updatePlaylist(index, songId = this.quedPlaylist[0]) {
     this.loadingNewPlaylistSong = true;
     this.playlingPlaylistData = this.cuedPlaylistData;
     this.playingPlaylist = this.quedPlaylist;
 
     player.cuePlaylist(lofiPlaylist.quedPlaylist);
-        
+
     setTimeout(() => {
       player.playVideoAt(index);
       handleNewSongLoad(songId);
-        
+
       this.loadingNewPlaylistSong = false;
-    }, 1500)
+    }, 1500);
   }
-  
+
   createPlayingSongInterval() {
     this.playingSongInterval = setInterval(async () => {
-      const percentageListened = player.getCurrentTime() / player.getDuration() * 100;
+      const percentageListened =
+        (player.getCurrentTime() / player.getDuration()) * 100;
 
       // If songs has been playing for >=10% of its total duration, mark the song as listened
       if (percentageListened >= 10) {
@@ -52,13 +56,13 @@ class Playlist {
           clearInterval(this.playingSongInterval);
         }
       }
-    }, 1000)
+    }, 1000);
   }
-  
+
   get playingSongData() {
     return this.playlingPlaylistData.find((song) => {
       return song.id === this.playingSong;
-    })
+    });
   }
 }
 
@@ -87,6 +91,12 @@ function onYouTubeIframeAPIReady() {
 
 function onPlayerError() {
   displayAlert('danger', 'Failed to play song');
+
+  setTimeout(() => {
+    addSongToListenedList(lofiPlaylist.playingSong);
+  }, 10);
+
+  player.nextVideo();
 }
 
 // The API will call this function when the video player is ready.
@@ -127,19 +137,40 @@ function onPlayerStateChange(event) {
   if (!playerVidId) return;
 
   const pausePlayWidgetButton = document.querySelector('#play-pause');
-  let { toggleSongButton } = getPlayingPlaylistSongElements(lofiPlaylist.playingSong);
+  let { toggleSongButton } = getPlayingPlaylistSongElements(
+    lofiPlaylist.playingSong
+  );
 
   // Change the play / pause button icon on the widget and playlist song if a song is loaded
   if (event.target.getPlayerState() === PLAYING) {
-    replaceClass(pausePlayWidgetButton?.firstElementChild, playIconClass, pauseIconClass);
-    replaceClass(toggleSongButton?.firstElementChild, playIconClass, pauseIconClass);
+    replaceClass(
+      pausePlayWidgetButton?.firstElementChild,
+      playIconClass,
+      pauseIconClass
+    );
+    replaceClass(
+      toggleSongButton?.firstElementChild,
+      playIconClass,
+      pauseIconClass
+    );
   } else {
-    replaceClass(pausePlayWidgetButton?.firstElementChild, pauseIconClass, playIconClass);
-    replaceClass(toggleSongButton?.firstElementChild, pauseIconClass, playIconClass);
+    replaceClass(
+      pausePlayWidgetButton?.firstElementChild,
+      pauseIconClass,
+      playIconClass
+    );
+    replaceClass(
+      toggleSongButton?.firstElementChild,
+      pauseIconClass,
+      playIconClass
+    );
   }
 
   // If a new song is loaded and isn't already being handled by the updatePlaylist class method
-  if (!lofiPlaylist.loadingNewPlaylistSong && lofiPlaylist.playingSong !== playerVidId) {
+  if (
+    !lofiPlaylist.loadingNewPlaylistSong &&
+    lofiPlaylist.playingSong !== playerVidId
+  ) {
     handleNewSongLoad(playerVidId);
   }
 }
@@ -147,4 +178,4 @@ function onPlayerStateChange(event) {
 // Allow for the method to be called by the window when the api code is downloaded
 window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 
-export { player, lofiPlaylist }
+export { player, lofiPlaylist };

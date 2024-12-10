@@ -142,22 +142,24 @@ def discover():
         )
 
     flattened_listened_song_ids = [id for (id,) in listened_song_ids]
-
+    
     # Filter out songs that are already listened to
     unique_ids = [
         id for id in channel_video_ids if id not in flattened_listened_song_ids]
-
-    # If we don't have at least 50 unique ids, search for additional lofi songs to fill out the remaining ids
-    if len(unique_ids) < 50:
-        num_of_ids_to_get = 50 - len(unique_ids)
+    
+    songs = get_random_songs(unique_ids, 50)
+    song_details = get_paginated_video_details(songs)    
+    filtered_songs = get_songs_response(song_details)
+    
+    # If we don't have at least 50 songs, search for additional lofi songs to fill out the remaining ids
+    if len(filtered_songs) < 50:
+        num_of_ids_to_get = 50 - len(filtered_songs)
         additional_video_ids = get_paginated_searched_lofi_video_ids(
             num_of_ids_to_get, flattened_listened_song_ids)
-        unique_ids.extend(additional_video_ids)
-
-    songs = get_random_songs(unique_ids, 50)
-    song_details = get_paginated_video_details(songs)
-    filtered_songs = get_songs_response(song_details)
-
+        
+        searched_song_details = get_paginated_video_details(additional_video_ids)
+        filtered_songs.extend(get_songs_response(searched_song_details))
+        
     return jsonify(
         json_response(
             data={"songs": filtered_songs}

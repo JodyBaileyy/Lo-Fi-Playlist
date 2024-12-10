@@ -34,7 +34,7 @@ A song is marked as listened when you have listened to 10% or more of a song. Fo
 - Run `python manage.py` which will set up the database
 - Run `chmod u+x run-prod.sh` or `chmod u+x run-dev.sh`, depending on which environment you'd like to run the application on
 - Run `./run-prod.sh` or `./run-dev.sh`, depending on which environment you'd like to run the application on
-- Navigate to [127.0.0.1:9000](http://127.0.0.1:9000/)
+- Navigate to [127.0.0.1:9879](http://127.0.0.1:9879/)
 
 To start the sqlite DB interactive terminal, run `sqlite3 instance/db.sqlite`
 
